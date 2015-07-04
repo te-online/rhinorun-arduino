@@ -3,18 +3,18 @@ const int coinInt = 1;
 
 //Set the coinsValue to a Volatile float
 //Volatile as this variable changes any time the Interrupt is triggered
-int coinsValue = 0;
+volatile int coinsValue = 0;
 
 //A Coin has been inserted flag
-int coinsChange = 0;
+volatile int coinsChange = 0;
 
 // 50 cent is a 1 that comes from the acceptor
 int coinConst = 50;
-unsigned long lastPulse = 0;
+volatile unsigned long lastPulse = 0;
 unsigned long pulseTimeout = 250;
-boolean coinFinished = true;
+volatile boolean coinFinished = true;
 boolean waitForCoinFinish = false;
-int currentCoin = 0;
+volatile int currentCoin = 0;
 
 int hopperSensor = A5;
 int hopperPin = 3;
