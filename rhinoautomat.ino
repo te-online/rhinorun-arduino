@@ -22,6 +22,10 @@ int hopperSensorTreshold = 100;
 unsigned long coinAt = 0;
 unsigned long hopperTimeout = 1000;
 
+// Button
+int buttonPin = 2;
+
+// Hopper state
 boolean hopper = false;
 
 void setup() {
@@ -32,7 +36,7 @@ void setup() {
 
   //If coinInt goes HIGH (a Pulse), call the coinInserted function
   //An attachInterrupt will always trigger, even if your using delays
-  attachInterrupt(coinInt, coinInserted, RISING);   
+  attachInterrupt(coinInt, coinInserted, RISING);  
 
   // Set motor direction to forward
   pinMode(12, OUTPUT);
@@ -67,6 +71,25 @@ void coinInserted() {
 
 void loop() {
   unsigned long currentMillis = millis();
+
+  // Empty button is a switch
+  // On first press it will trigger hopper emptying
+  // On second press while hopper is emptying it will stop the process
+  // On the next press it will again trigger the hopper
+  if(digitalRead(buttonPin) == HIGH) {
+    if(hopper == false) {
+      emptyHopper();
+    } else {
+      if(hopper == true) {
+        coinAt = millis();
+        hopper = false;
+        coinsValue = -1;
+        // Tell client that hopper emptying was stopped
+        // but that the current fill-value is unknown
+        Serial.println("e:2");
+      }
+    }
+  }
 
   if(analogRead(hopperSensor) < hopperSensorTreshold) {
     // Coin wurde ausgeworfen
