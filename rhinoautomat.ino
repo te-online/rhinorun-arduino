@@ -18,7 +18,7 @@ volatile int currentCoin = 0;
 
 int hopperSensor = A5;
 int hopperPin = 3;
-int hopperSensorTreshold = 100;
+int hopperSensorTreshold = 50;
 unsigned long coinAt = 0;
 unsigned long hopperTimeout = 1000;
 
@@ -68,10 +68,13 @@ void coinInserted() {
 void loop() {
   unsigned long currentMillis = millis();
 
-  if(analogRead(hopperSensor) < hopperSensorTreshold) {
+  int read = analogRead(hopperSensor);
+  if(read < hopperSensorTreshold) {
     // Coin wurde ausgeworfen
-    coinAt = currentMillis;
+    coinAt = millis();
     // elapsed millis ???
+    //Serial.println("COIN Sensor triggered");
+    //Serial.println(read);
   }
 
   // Read input from Serial client
@@ -84,7 +87,7 @@ void loop() {
 
   // Command p = give current credit
   if(input == 'p') {
-    Serial.println("p:"+coinsValue);
+    Serial.println("p:"+String(coinsValue));
   }
 
   // Needed for millis calculation (why?)
@@ -113,7 +116,7 @@ void loop() {
         currentCoin = 100;
       }
     }
-    Serial.println("c:"+currentCoin);
+    Serial.println("c:"+String(currentCoin));
     coinFinished = true;
     currentCoin = 0;
   }
