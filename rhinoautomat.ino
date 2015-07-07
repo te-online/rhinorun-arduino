@@ -107,8 +107,7 @@ void loop() {
 
   // Command p = give current credit
   if(input == 'p') {
-    Serial.print("p:");
-    Serial.println(coinsValue);
+    Serial.println("p:"+coinsValue);
   }
 
   // Needed for millis calculation (why?)
@@ -129,8 +128,15 @@ void loop() {
   // Tell client which type of coin was inserted
   // and reset coin counting
   if(((unsigned long)(millis() - lastPulse) >= pulseTimeout) && currentCoin > 0) {
-    Serial.print("c:");
-    Serial.println(currentCoin);
+    // prevent this command from sending nonsense
+    if(currentCoin != 50 && currentCoin != 100) {
+      if(currentCoin <= 50) {
+        currentCoin = 50;
+      } else {
+        currentCoin = 100;
+      }
+    }
+    Serial.println("c:"+currentCoin);
     coinFinished = true;
     currentCoin = 0;
   }
